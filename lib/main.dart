@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
+import 'features/auth/presentation/bloc/auth_bloc.dart';
+import 'features/auth/presentation/bloc/auth_event.dart';
 import 'features/media/presentation/bloc/media_bloc.dart';
 import 'features/media/presentation/pages/home_page.dart';
 import 'injection_container.dart' as di;
@@ -10,6 +13,11 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await dotenv.load(fileName: ".env");
+
+  await Supabase.initialize(
+    url: dotenv.env['SUPABASE_URL'] ?? '',
+    anonKey: dotenv.env['SUPABASE_ANON_KEY'] ?? '',
+  );
 
   await di.init();
 
@@ -21,8 +29,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => di.sl<MediaBloc>(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => di.sl<MediaBloc>(),
+        ),
+        BlocProvider(
+          create: (context) => di.sl<AuthBloc>()..add(CheckAuthStatusEvent()),
+        ),
+      ],
       child: MaterialApp(
         title: 'CineMatch',
         debugShowCheckedModeBanner: false,
