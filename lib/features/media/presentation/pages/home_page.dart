@@ -18,7 +18,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
   late TabController _tabController;
   int _currentTabIndex = 0;
-  Set<MediaFilterType> _activeFilters = {}; // Par défaut, aucun filtre (affiche tout)
+  Set<MediaFilterType> _activeFilters = {};
 
   @override
   void initState() {
@@ -29,27 +29,19 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
 
   void _loadCurrentTab() {
     if (_currentTabIndex == 0) {
-      // Onglet Tendances
       if (_activeFilters.isEmpty || _activeFilters.length == 2) {
-        // Aucun filtre ou les deux filtres = afficher tout (all)
         context.read<MediaBloc>().add(const GetTrendingEvent());
       } else if (_activeFilters.contains(MediaFilterType.movies)) {
-        // Uniquement les films
         context.read<MediaBloc>().add(const GetTrendingMoviesEvent());
       } else {
-        // Uniquement les séries
         context.read<MediaBloc>().add(const GetTrendingTvShowsEvent());
       }
     } else {
-      // Onglet Populaires
       if (_activeFilters.isEmpty || _activeFilters.length == 2) {
-        // Aucun filtre ou les deux filtres = afficher tout
         context.read<MediaBloc>().add(const GetPopularAllEvent());
       } else if (_activeFilters.contains(MediaFilterType.movies)) {
-        // Uniquement les films
         context.read<MediaBloc>().add(const GetPopularMoviesEvent());
       } else {
-        // Uniquement les séries
         context.read<MediaBloc>().add(const GetPopularTvShowsEvent());
       }
     }
@@ -67,7 +59,6 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       appBar: AppBar(
         title: const Text('CineMatch'),
         actions: [
-          // Filtres Films et Séries
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -128,7 +119,6 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                   builder: (context) => const SearchPage(),
                 ),
               );
-              // Recharger les données quand on revient
               _loadCurrentTab();
             },
           ),
@@ -171,7 +161,6 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
               ),
             );
           }
-          // Pour MediaDetailsLoaded ou MediaInitial, afficher un message
           return const Center(child: Text('Bienvenue sur CineMatch'));
         },
       ),

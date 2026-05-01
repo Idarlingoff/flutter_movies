@@ -16,7 +16,6 @@ import 'features/media/presentation/bloc/media_bloc.dart';
 final sl = GetIt.instance;
 
 Future<void> init() async {
-  // BLoC
   sl.registerFactory(
     () => MediaBloc(
       getPopularMovies: sl(),
@@ -29,7 +28,6 @@ Future<void> init() async {
     ),
   );
 
-  // Use cases
   sl.registerLazySingleton(() => GetPopularMovies(sl()));
   sl.registerLazySingleton(() => GetPopularTvShows(sl()));
   sl.registerLazySingleton(() => GetTrending(sl()));
@@ -38,17 +36,14 @@ Future<void> init() async {
   sl.registerLazySingleton(() => SearchMedia(sl()));
   sl.registerLazySingleton(() => GetMediaDetails(sl()));
 
-  // Repository
   sl.registerLazySingleton<MediaRepository>(
     () => MediaRepositoryImpl(remoteDataSource: sl()),
   );
 
-  // Data sources
   sl.registerLazySingleton<MediaRemoteDataSource>(
     () => MediaRemoteDataSourceImpl(dio: sl()),
   );
 
-  // External
   sl.registerLazySingleton(() => Dio());
 }
 

@@ -70,11 +70,9 @@ class MediaBloc extends Bloc<MediaEvent, MediaState> {
   ) async {
     emit(MediaLoading());
 
-    // Récupérer les films et séries en parallèle
     final moviesResult = await getPopularMovies(event.page);
     final tvShowsResult = await getPopularTvShows(event.page);
 
-    // Vérifier les erreurs
     String? errorMessage;
 
     final List allMedia = [];
@@ -93,13 +91,11 @@ class MediaBloc extends Bloc<MediaEvent, MediaState> {
       (tvShows) => allMedia.addAll(tvShows),
     );
 
-    // Si on a une erreur et aucun contenu, émettre l'erreur
     if (errorMessage != null && allMedia.isEmpty) {
       emit(MediaError(errorMessage!));
       return;
     }
 
-    // Trier par popularité (voteAverage * voteCount)
     if (allMedia.isNotEmpty) {
       allMedia.sort((a, b) {
         final scoreA = a.voteAverage * a.voteCount;

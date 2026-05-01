@@ -48,7 +48,6 @@ class MediaCard extends StatelessWidget {
             ),
           ),
         );
-        // Appeler le callback après le retour
         onTap?.call();
       },
       child: Card(

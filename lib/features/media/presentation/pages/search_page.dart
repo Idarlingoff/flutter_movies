@@ -21,7 +21,6 @@ class _SearchPageState extends State<SearchPage> {
   @override
   void initState() {
     super.initState();
-    // Écouter les changements dans le champ de recherche
     _searchController.addListener(_onSearchChanged);
   }
 
@@ -34,15 +33,12 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   void _onSearchChanged() {
-    // Mettre à jour l'affichage du bouton clear
     setState(() {
       _showClearButton = _searchController.text.isNotEmpty;
     });
 
-    // Annuler le timer précédent si l'utilisateur continue de taper
     if (_debounce?.isActive ?? false) _debounce!.cancel();
 
-    // Attendre 500ms après que l'utilisateur a arrêté de taper
     _debounce = Timer(const Duration(milliseconds: 500), () {
       final query = _searchController.text.trim();
       if (query.isNotEmpty) {
@@ -54,7 +50,6 @@ class _SearchPageState extends State<SearchPage> {
   void _onSearch() {
     final query = _searchController.text.trim();
     if (query.isNotEmpty) {
-      // Annuler le debounce si on appuie sur le bouton de recherche
       _debounce?.cancel();
       context.read<MediaBloc>().add(SearchMediaEvent(query: query));
     }
