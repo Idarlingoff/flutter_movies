@@ -1,6 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../favorites/presentation/widgets/favorite_button.dart';
+import '../../../watchlist/presentation/widgets/watchlist_button.dart';
+import '../../../watched/presentation/widgets/watched_button.dart';
 import '../../domain/entities/media.dart';
 import '../bloc/media_bloc.dart';
 import '../bloc/media_event.dart';
@@ -21,12 +24,17 @@ class DetailsPage extends StatefulWidget {
 }
 
 class _DetailsPageState extends State<DetailsPage> {
+  bool _isInitialized = false;
+
   @override
-  void initState() {
-    super.initState();
-    context.read<MediaBloc>().add(
-      GetMediaDetailsEvent(id: widget.mediaId, type: widget.mediaType),
-    );
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_isInitialized) {
+      context.read<MediaBloc>().add(
+        GetMediaDetailsEvent(id: widget.mediaId, type: widget.mediaType),
+      );
+      _isInitialized = true;
+    }
   }
 
   @override
@@ -129,19 +137,27 @@ class _DetailsPageState extends State<DetailsPage> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            ElevatedButton.icon(
-                              onPressed: () {
-                                // TODO: Ajouter aux favoris
-                              },
-                              icon: const Icon(Icons.favorite_border),
-                              label: const Text('Favoris'),
+                            FavoriteButton(
+                              mediaId: widget.mediaId,
+                              mediaType: widget.mediaType.name,
+                              title: details.title,
+                              posterPath: details.posterPath,
+                              size: 28,
                             ),
-                            ElevatedButton.icon(
-                              onPressed: () {
-                                // TODO: Ajouter à la watchlist
-                              },
-                              icon: const Icon(Icons.bookmark_border),
-                              label: const Text('Watchlist'),
+                            const SizedBox(width: 16),
+                            WatchlistButton(
+                              mediaId: widget.mediaId,
+                              mediaType: widget.mediaType.name,
+                              title: details.title,
+                              posterPath: details.posterPath,
+                              size: 28,
+                            ),
+                            const SizedBox(width: 16),
+                            WatchedButton(
+                              mediaId: widget.mediaId,
+                              mediaType: widget.mediaType.name,
+                              title: details.title,
+                              posterPath: details.posterPath,
                             ),
                           ],
                         ),

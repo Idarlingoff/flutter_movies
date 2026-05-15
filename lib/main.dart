@@ -5,8 +5,14 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'features/auth/presentation/bloc/auth_bloc.dart';
 import 'features/auth/presentation/bloc/auth_event.dart';
+import 'features/favorites/presentation/bloc/favorites_bloc.dart';
+import 'features/favorites/presentation/bloc/favorites_event.dart';
 import 'features/media/presentation/bloc/media_bloc.dart';
 import 'features/media/presentation/pages/home_page.dart';
+import 'features/watched/presentation/bloc/watched_bloc.dart';
+import 'features/watched/presentation/bloc/watched_event.dart';
+import 'features/watchlist/presentation/bloc/watchlist_bloc.dart';
+import 'features/watchlist/presentation/bloc/watchlist_event.dart';
 import 'injection_container.dart' as di;
 
 void main() async {
@@ -36,6 +42,15 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => di.sl<AuthBloc>()..add(CheckAuthStatusEvent()),
+        ),
+        BlocProvider(
+          create: (context) => di.sl<FavoritesBloc>()..add(LoadFavoritesEvent()),
+        ),
+        BlocProvider(
+          create: (context) => di.sl<WatchlistBloc>()..add(LoadWatchlistEvent()),
+        ),
+        BlocProvider(
+          create: (context) => di.sl<WatchedBloc>()..add(LoadWatchedEvent()),
         ),
       ],
       child: MaterialApp(
