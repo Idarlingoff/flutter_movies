@@ -46,7 +46,7 @@ jobs:
 
       - name: 🏗️ Build Flutter Web
         run: |
-          flutter build web --release --base-href "/flutter_movies/" --web-renderer canvaskit
+          flutter build web --release --base-href "/flutter_movies/"
           # Note: Remplacez "/flutter_movies/" par le nom de votre repository
           # Ou utilisez "/" si vous utilisez un domaine personnalisé
 
@@ -73,5 +73,6 @@ jobs:
         run: |
           echo "🎉 Application déployée avec succès !"
           echo "🌐 URL: ${{ steps.deployment.outputs.page_url }}"
+
 
 
