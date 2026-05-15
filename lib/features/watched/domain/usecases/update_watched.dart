@@ -4,37 +4,31 @@ import '../../../../core/usecases/usecase.dart';
 import '../entities/watched_entity.dart';
 import '../repositories/watched_repository.dart';
 
-class AddToWatched implements UseCase<WatchedEntity, AddToWatchedParams> {
+class UpdateWatched implements UseCase<WatchedEntity, UpdateWatchedParams> {
   final WatchedRepository repository;
 
-  AddToWatched(this.repository);
+  UpdateWatched(this.repository);
 
   @override
-  Future<Either<Failure, WatchedEntity>> call(AddToWatchedParams params) async {
-    return await repository.addToWatched(
+  Future<Either<Failure, WatchedEntity>> call(UpdateWatchedParams params) async {
+    return await repository.updateWatched(
       mediaId: params.mediaId,
       mediaType: params.mediaType,
-      title: params.title,
-      posterPath: params.posterPath,
       rating: params.rating,
       comment: params.comment,
     );
   }
 }
 
-class AddToWatchedParams {
+class UpdateWatchedParams {
   final int mediaId;
   final String mediaType;
-  final String title;
-  final String? posterPath;
   final double? rating;
   final String? comment;
 
-  AddToWatchedParams({
+  UpdateWatchedParams({
     required this.mediaId,
     required this.mediaType,
-    required this.title,
-    this.posterPath,
     this.rating,
     this.comment,
   });

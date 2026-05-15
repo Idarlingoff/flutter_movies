@@ -7,8 +7,11 @@ class WatchedEntity extends Equatable {
   final String mediaType;
   final String title;
   final String? posterPath;
+  final double? rating;
+  final String? comment;
   final DateTime watchedAt;
   final DateTime createdAt;
+  final DateTime updatedAt;
 
   const WatchedEntity({
     required this.id,
@@ -17,8 +20,11 @@ class WatchedEntity extends Equatable {
     required this.mediaType,
     required this.title,
     this.posterPath,
+    this.rating,
+    this.comment,
     required this.watchedAt,
     required this.createdAt,
+    required this.updatedAt,
   });
 
   @override
@@ -29,8 +35,11 @@ class WatchedEntity extends Equatable {
         mediaType,
         title,
         posterPath,
+        rating,
+        comment,
         watchedAt,
         createdAt,
+        updatedAt,
       ];
 }
 

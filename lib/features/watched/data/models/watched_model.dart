@@ -8,8 +8,11 @@ class WatchedModel extends WatchedEntity {
     required super.mediaType,
     required super.title,
     super.posterPath,
+    super.rating,
+    super.comment,
     required super.watchedAt,
     required super.createdAt,
+    required super.updatedAt,
   });
 
   factory WatchedModel.fromJson(Map<String, dynamic> json) {
@@ -20,8 +23,11 @@ class WatchedModel extends WatchedEntity {
       mediaType: json['media_type'] as String,
       title: json['title'] as String,
       posterPath: json['poster_path'] as String?,
+      rating: json['rating'] != null ? (json['rating'] as num).toDouble() : null,
+      comment: json['comment'] as String?,
       watchedAt: DateTime.parse(json['watched_at'] as String),
       createdAt: DateTime.parse(json['created_at'] as String),
+      updatedAt: DateTime.parse(json['updated_at'] as String),
     );
   }
 
@@ -33,8 +39,11 @@ class WatchedModel extends WatchedEntity {
       'media_type': mediaType,
       'title': title,
       'poster_path': posterPath,
+      'rating': rating,
+      'comment': comment,
       'watched_at': watchedAt.toIso8601String(),
       'created_at': createdAt.toIso8601String(),
+      'updated_at': updatedAt.toIso8601String(),
     };
   }
 }

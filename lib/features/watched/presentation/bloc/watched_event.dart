@@ -31,16 +31,37 @@ class AddToWatchedEvent extends WatchedEvent {
   final String mediaType;
   final String title;
   final String? posterPath;
+  final double? rating;
+  final String? comment;
 
   const AddToWatchedEvent({
     required this.mediaId,
     required this.mediaType,
     required this.title,
     this.posterPath,
+    this.rating,
+    this.comment,
   });
 
   @override
-  List<Object?> get props => [mediaId, mediaType, title, posterPath];
+  List<Object?> get props => [mediaId, mediaType, title, posterPath, rating, comment];
+}
+
+class UpdateWatchedEvent extends WatchedEvent {
+  final int mediaId;
+  final String mediaType;
+  final double? rating;
+  final String? comment;
+
+  const UpdateWatchedEvent({
+    required this.mediaId,
+    required this.mediaType,
+    this.rating,
+    this.comment,
+  });
+
+  @override
+  List<Object?> get props => [mediaId, mediaType, rating, comment];
 }
 
 class RemoveFromWatchedEvent extends WatchedEvent {

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/watched_bloc.dart';
 import '../bloc/watched_event.dart';
 import '../bloc/watched_state.dart';
+import 'rating_dialog.dart';
 
 class WatchedButton extends StatelessWidget {
   final int mediaId;
@@ -24,7 +25,25 @@ class WatchedButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<WatchedBloc, WatchedState>(
       listener: (context, state) {
-        if (state is WatchedAddSuccess) {
+        if (state is WatchedReadyToRate) {
+          // Afficher le dialogue de notation
+          showDialog(
+            context: context,
+            builder: (dialogContext) => RatingDialog(
+              title: state.title,
+              onSubmit: (rating, comment) {
+                context.read<WatchedBloc>().add(AddToWatchedEvent(
+                  mediaId: state.mediaId,
+                  mediaType: state.mediaType,
+                  title: state.title,
+                  posterPath: state.posterPath,
+                  rating: rating,
+                  comment: comment,
+                ));
+              },
+            ),
+          );
+        } else if (state is WatchedAddSuccess) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('Ajouté aux films regardés'),

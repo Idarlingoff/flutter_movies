@@ -25,6 +25,8 @@ class WatchedRepositoryImpl implements WatchedRepository {
     required String mediaType,
     required String title,
     String? posterPath,
+    double? rating,
+    String? comment,
   }) async {
     try {
       final watched = await remoteDataSource.addToWatched(
@@ -32,6 +34,28 @@ class WatchedRepositoryImpl implements WatchedRepository {
         mediaType: mediaType,
         title: title,
         posterPath: posterPath,
+        rating: rating,
+        comment: comment,
+      );
+      return Right(watched);
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, WatchedEntity>> updateWatched({
+    required int mediaId,
+    required String mediaType,
+    double? rating,
+    String? comment,
+  }) async {
+    try {
+      final watched = await remoteDataSource.updateWatched(
+        mediaId: mediaId,
+        mediaType: mediaType,
+        rating: rating,
+        comment: comment,
       );
       return Right(watched);
     } catch (e) {

@@ -10,6 +10,15 @@ abstract class WatchedRepository {
     required String mediaType,
     required String title,
     String? posterPath,
+    double? rating,
+    String? comment,
+  });
+
+  Future<Either<Failure, WatchedEntity>> updateWatched({
+    required int mediaId,
+    required String mediaType,
+    double? rating,
+    String? comment,
   });
 
   Future<Either<Failure, void>> removeFromWatched({

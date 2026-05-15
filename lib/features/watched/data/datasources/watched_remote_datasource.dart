@@ -8,6 +8,14 @@ abstract class WatchedRemoteDataSource {
     required String mediaType,
     required String title,
     String? posterPath,
+    double? rating,
+    String? comment,
+  });
+  Future<WatchedModel> updateWatched({
+    required int mediaId,
+    required String mediaType,
+    double? rating,
+    String? comment,
   });
   Future<void> removeFromWatched({
     required int mediaId,
@@ -46,6 +54,8 @@ class WatchedRemoteDataSourceImpl implements WatchedRemoteDataSource {
     required String mediaType,
     required String title,
     String? posterPath,
+    double? rating,
+    String? comment,
   }) async {
     try {
       final userId = supabaseClient.auth.currentUser?.id;
@@ -59,11 +69,44 @@ class WatchedRemoteDataSourceImpl implements WatchedRemoteDataSource {
         'media_type': mediaType,
         'title': title,
         'poster_path': posterPath,
+        'rating': rating,
+        'comment': comment,
       }).select().single();
 
       return WatchedModel.fromJson(response);
     } catch (e) {
       throw Exception('Failed to add to watched: $e');
+    }
+  }
+
+  @override
+  Future<WatchedModel> updateWatched({
+    required int mediaId,
+    required String mediaType,
+    double? rating,
+    String? comment,
+  }) async {
+    try {
+      final userId = supabaseClient.auth.currentUser?.id;
+      if (userId == null) {
+        throw Exception('User not authenticated');
+      }
+
+      final response = await supabaseClient
+          .from('watched')
+          .update({
+            'rating': rating,
+            'comment': comment,
+          })
+          .eq('user_id', userId)
+          .eq('media_id', mediaId)
+          .eq('media_type', mediaType)
+          .select()
+          .single();
+
+      return WatchedModel.fromJson(response);
+    } catch (e) {
+      throw Exception('Failed to update watched: $e');
     }
   }
 

@@ -7,6 +7,7 @@ import '../bloc/watched_bloc.dart';
 import '../bloc/watched_event.dart';
 import '../bloc/watched_state.dart';
 import '../../domain/entities/watched_entity.dart';
+import '../widgets/rating_dialog.dart';
 
 class WatchedPage extends StatelessWidget {
   const WatchedPage({super.key});
@@ -191,6 +192,43 @@ class _WatchedItemCard extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(height: 8),
+                    if (item.rating != null) ...[
+                      Row(
+                        children: [
+                          ...List.generate(
+                            5,
+                            (index) => Icon(
+                              index < item.rating!.toInt() ? Icons.star : Icons.star_border,
+                              size: 16,
+                              color: Colors.amber,
+                            ),
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            '${item.rating!.toStringAsFixed(1)}/5',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey[700],
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                    ],
+                    if (item.comment != null && item.comment!.isNotEmpty) ...[
+                      Text(
+                        item.comment!,
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: Colors.grey[700],
+                          fontStyle: FontStyle.italic,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 4),
+                    ],
                     Row(
                       children: [
                         Icon(
@@ -211,16 +249,43 @@ class _WatchedItemCard extends StatelessWidget {
                   ],
                 ),
               ),
-              IconButton(
-                icon: const Icon(Icons.delete, color: Colors.red),
-                onPressed: () {
-                  context.read<WatchedBloc>().add(
-                        RemoveFromWatchedEvent(
-                          mediaId: item.mediaId,
-                          mediaType: item.mediaType,
+              Column(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.edit, size: 20),
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (dialogContext) => RatingDialog(
+                          title: item.title,
+                          onSubmit: (rating, comment) {
+                            context.read<WatchedBloc>().add(
+                              UpdateWatchedEvent(
+                                mediaId: item.mediaId,
+                                mediaType: item.mediaType,
+                                rating: rating,
+                                comment: comment,
+                              ),
+                            );
+                          },
                         ),
                       );
-                },
+                    },
+                    tooltip: 'Modifier la note',
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.delete, color: Colors.red, size: 20),
+                    onPressed: () {
+                      context.read<WatchedBloc>().add(
+                            RemoveFromWatchedEvent(
+                              mediaId: item.mediaId,
+                              mediaType: item.mediaType,
+                            ),
+                          );
+                    },
+                    tooltip: 'Supprimer',
+                  ),
+                ],
               ),
             ],
           ),

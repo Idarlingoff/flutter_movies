@@ -4,6 +4,7 @@ import '../../domain/usecases/add_to_watched.dart';
 import '../../domain/usecases/check_is_watched.dart';
 import '../../domain/usecases/get_watched.dart';
 import '../../domain/usecases/remove_from_watched.dart';
+import '../../domain/usecases/update_watched.dart';
 import 'watched_event.dart';
 import 'watched_state.dart';
 
@@ -12,16 +13,19 @@ class WatchedBloc extends Bloc<WatchedEvent, WatchedState> {
   final AddToWatched addToWatched;
   final RemoveFromWatched removeFromWatched;
   final CheckIsWatched checkIsWatched;
+  final UpdateWatched updateWatched;
 
   WatchedBloc({
     required this.getWatched,
     required this.addToWatched,
     required this.removeFromWatched,
     required this.checkIsWatched,
+    required this.updateWatched,
   }) : super(WatchedInitial()) {
     on<LoadWatchedEvent>(_onLoadWatched);
     on<ToggleWatchedEvent>(_onToggleWatched);
     on<AddToWatchedEvent>(_onAddToWatched);
+    on<UpdateWatchedEvent>(_onUpdateWatched);
     on<RemoveFromWatchedEvent>(_onRemoveFromWatched);
     on<CheckIsWatchedEvent>(_onCheckIsWatched);
   }
@@ -57,22 +61,13 @@ class WatchedBloc extends Bloc<WatchedEvent, WatchedState> {
             },
           );
         } else {
-          // Ajouter à la liste
-          final result = await addToWatched(
-            AddToWatchedParams(
-              mediaId: event.mediaId,
-              mediaType: event.mediaType,
-              title: event.title,
-              posterPath: event.posterPath,
-            ),
-          );
-          result.fold(
-            (failure) => emit(WatchedError(message: failure.message)),
-            (watched) {
-              emit(WatchedAddSuccess(watched: watched));
-              add(LoadWatchedEvent());
-            },
-          );
+          // Le film n'est pas encore regardé, on va demander la notation
+          emit(WatchedReadyToRate(
+            mediaId: event.mediaId,
+            mediaType: event.mediaType,
+            title: event.title,
+            posterPath: event.posterPath,
+          ));
         }
       },
     );
@@ -102,6 +97,8 @@ class WatchedBloc extends Bloc<WatchedEvent, WatchedState> {
         mediaType: event.mediaType,
         title: event.title,
         posterPath: event.posterPath,
+        rating: event.rating,
+        comment: event.comment,
       ),
     );
 
@@ -109,6 +106,28 @@ class WatchedBloc extends Bloc<WatchedEvent, WatchedState> {
       (failure) => emit(WatchedError(message: failure.message)),
       (watched) {
         emit(WatchedAddSuccess(watched: watched));
+        add(LoadWatchedEvent());
+      },
+    );
+  }
+
+  Future<void> _onUpdateWatched(
+    UpdateWatchedEvent event,
+    Emitter<WatchedState> emit,
+  ) async {
+    final result = await updateWatched(
+      UpdateWatchedParams(
+        mediaId: event.mediaId,
+        mediaType: event.mediaType,
+        rating: event.rating,
+        comment: event.comment,
+      ),
+    );
+
+    result.fold(
+      (failure) => emit(WatchedError(message: failure.message)),
+      (watched) {
+        emit(WatchedUpdateSuccess(watched: watched));
         add(LoadWatchedEvent());
       },
     );

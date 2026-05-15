@@ -45,10 +45,36 @@ class WatchedCheckResult extends WatchedState {
   List<Object?> get props => [isWatched, mediaId, mediaType];
 }
 
+class WatchedReadyToRate extends WatchedState {
+  final int mediaId;
+  final String mediaType;
+  final String title;
+  final String? posterPath;
+
+  const WatchedReadyToRate({
+    required this.mediaId,
+    required this.mediaType,
+    required this.title,
+    this.posterPath,
+  });
+
+  @override
+  List<Object?> get props => [mediaId, mediaType, title, posterPath];
+}
+
 class WatchedAddSuccess extends WatchedState {
   final WatchedEntity watched;
 
   const WatchedAddSuccess({required this.watched});
+
+  @override
+  List<Object?> get props => [watched];
+}
+
+class WatchedUpdateSuccess extends WatchedState {
+  final WatchedEntity watched;
+
+  const WatchedUpdateSuccess({required this.watched});
 
   @override
   List<Object?> get props => [watched];

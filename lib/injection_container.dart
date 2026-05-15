@@ -46,6 +46,7 @@ import 'features/watched/domain/usecases/add_to_watched.dart';
 import 'features/watched/domain/usecases/check_is_watched.dart';
 import 'features/watched/domain/usecases/get_watched.dart';
 import 'features/watched/domain/usecases/remove_from_watched.dart';
+import 'features/watched/domain/usecases/update_watched.dart';
 import 'features/watched/presentation/bloc/watched_bloc.dart';
 
 final sl = GetIt.instance;
@@ -98,6 +99,7 @@ Future<void> init() async {
       addToWatched: sl(),
       removeFromWatched: sl(),
       checkIsWatched: sl(),
+      updateWatched: sl(),
     ),
   );
 
@@ -130,6 +132,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => AddToWatched(sl()));
   sl.registerLazySingleton(() => RemoveFromWatched(sl()));
   sl.registerLazySingleton(() => CheckIsWatched(sl()));
+  sl.registerLazySingleton(() => UpdateWatched(sl()));
 
   sl.registerLazySingleton<MediaRepository>(
     () => MediaRepositoryImpl(remoteDataSource: sl()),
