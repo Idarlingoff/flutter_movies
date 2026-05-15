@@ -1,0 +1,77 @@
+name: 🚀 Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main  # ou 'master' selon votre branche principale
+  workflow_dispatch:  # Permet de déclencher manuellement
+
+# Permissions nécessaires pour déployer sur GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Ne permet qu'un seul déploiement à la fois
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: 🔨 Build Flutter Web
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 📱 Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.0'  # Ajustez selon votre version
+          channel: 'stable'
+          cache: true
+
+      - name: 📦 Get dependencies
+        run: flutter pub get
+
+      - name: 🔧 Create .env file from secrets
+        run: |
+          echo "TMDB_API_KEY=${{ secrets.TMDB_API_KEY }}" > .env
+          echo "" >> .env
+          echo "# Supabase Configuration" >> .env
+          echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> .env
+          echo "SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}" >> .env
+          echo "✅ Fichier .env créé avec les secrets GitHub"
+
+      - name: 🏗️ Build Flutter Web
+        run: |
+          flutter build web --release --base-href "/flutter_movies/" --web-renderer canvaskit
+          # Note: Remplacez "/flutter_movies/" par le nom de votre repository
+          # Ou utilisez "/" si vous utilisez un domaine personnalisé
+
+      - name: 📤 Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: 'build/web'
+
+  deploy:
+    name: 🌐 Deploy to GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: 🚀 Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+      - name: ✅ Deployment complete
+        run: |
+          echo "🎉 Application déployée avec succès !"
+          echo "🌐 URL: ${{ steps.deployment.outputs.page_url }}"
+
