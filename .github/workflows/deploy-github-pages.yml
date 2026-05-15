@@ -29,7 +29,6 @@ jobs:
       - name: 📱 Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.0'  # Ajustez selon votre version
           channel: 'stable'
           cache: true
 
@@ -74,4 +73,5 @@ jobs:
         run: |
           echo "🎉 Application déployée avec succès !"
           echo "🌐 URL: ${{ steps.deployment.outputs.page_url }}"
+
 
