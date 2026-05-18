@@ -18,13 +18,12 @@ import 'injection_container.dart' as di;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Charger .env.local pour le développement local, sinon .env pour la production
   try {
     await dotenv.load(fileName: ".env.local");
-    print('✅ Loaded .env.local (development mode)');
+    print('Loaded .env.local (development mode)');
   } catch (e) {
     await dotenv.load(fileName: ".env");
-    print('✅ Loaded .env (production mode)');
+    print('Loaded .env (production mode)');
   }
 
   await Supabase.initialize(

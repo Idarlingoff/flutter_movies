@@ -44,6 +44,22 @@ jobs:
           echo "SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}" >> .env
           echo "✅ Fichier .env créé avec les secrets GitHub"
 
+      - name: 🔍 Check .env file without exposing secrets
+        run: |
+          echo "Contenu des clés présentes :"
+          cut -d '=' -f1 .env
+      
+          echo "Longueur TMDB_API_KEY:"
+          echo -n "${{ secrets.TMDB_API_KEY }}" | wc -c
+      
+          echo "Longueur SUPABASE_URL:"
+          echo -n "${{ secrets.SUPABASE_URL }}" | wc -c
+      
+          echo "Longueur SUPABASE_ANON_KEY:"
+          echo -n "${{ secrets.SUPABASE_ANON_KEY }}" | wc -c
+      
+          test -s .env || (echo ".env vide ou absent" && exit 1)
+
       - name: 🏗️ Build Flutter Web
         run: |
           flutter build web --release --base-href "/flutter_movies/"
